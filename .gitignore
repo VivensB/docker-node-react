@@ -1,0 +1,7 @@
+ssh-key.pem
+node_modules
+npm-debug.log
+dist
+build
+.env
+.env.local
