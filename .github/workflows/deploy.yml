@@ -39,7 +39,15 @@ jobs:
 
           # Pull the latest code from GitHub repository
           git pull
-          
+
+          cd frontend
+            npm install
+
+          cd ../backend
+            npm install
+
+            cd ..
+
           # Stop and remove any running containers
           docker-compose down
 
