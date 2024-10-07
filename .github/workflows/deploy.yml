@@ -10,39 +10,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the code from the repository
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # Step 2: Set up Docker Buildx (for building multi-platform images)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      # Install Docker Compose (necessary because it's not available by default)
+      # Step 3: Install Docker Compose (necessary on GitHub Actions runners)
       - name: Install Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: Build Docker images
-        run: |
-          docker-compose build  # Builds the images as defined in your docker-compose.yml
-
+      # Step 4: Add the SSH key for Lightsail (from GitHub Secrets)
       - name: Add SSH key for Lightsail
         run: |
           echo "${{ secrets.AWS_LIGHTSAIL_PEM_KEY }}" > lightsail-key.pem
           chmod 400 lightsail-key.pem
 
+      # Step 5: Deploy to AWS Lightsail
       - name: Deploy to AWS Lightsail
         run: |
           ssh -i lightsail-key.pem -o "StrictHostKeyChecking=no" ubuntu@50.19.188.65 << 'EOF'
-          # Navigate to your application directory
+          # Navigate to your application directory on Lightsail
           cd /home/ubuntu/app/docker-server
 
-          # Pull the latest code from the repository
+          # Pull the latest code from GitHub repository
           git pull
 
-          # Bring down any running containers and remove them
+          # Stop and remove any running containers
           docker-compose down
 
-          # Run the docker-compose to build and start containers
+          # Build and start the containers again on the Lightsail server
           docker-compose up --build -d
           EOF
