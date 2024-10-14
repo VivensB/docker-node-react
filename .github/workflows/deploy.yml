@@ -33,7 +33,7 @@ jobs:
       # Step 5: Deploy to AWS Lightsail
       - name: Deploy to AWS Lightsail
         run: |
-          ssh -i lightsail-key.pem -o "StrictHostKeyChecking=no" ubuntu@50.19.188.65 << 'EOF'
+          ssh -i lightsail-key.pem -o "StrictHostKeyChecking=no" ubuntu@54.227.222.76 << 'EOF'
           # Navigate to your application directory on Lightsail
           cd /home/ubuntu/app/docker-server
 
@@ -45,6 +45,7 @@ jobs:
 
           cd ../backend
             npm install
+            npx prisma db push
 
             cd ..
 
